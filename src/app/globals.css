@@ -1,26 +1,197 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: #f8f8f8;
+  color: #121212;
+  scroll-behavior: smooth;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.gradient-text {
+  background: linear-gradient(to right, #333, #000);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: #000;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.project-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e5e5e5;
+}
+
+.project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+  border-color: #000;
+}
+
+.skill-icon {
+  transition: all 0.3s ease;
+}
+
+.skill-icon:hover {
+  transform: scale(1.2);
+}
+
+.github-calendar {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.activity-cell {
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+  border-radius: 2px;
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 24px;
+  background-color: #000;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.lanyard-space {
+  min-height: 400px;
+  background: linear-gradient(135deg, #f0f0f0 25%, transparent 25%) -10px 0,
+    linear-gradient(225deg, #f0f0f0 25%, transparent 25%) -10px 0,
+    linear-gradient(315deg, #f0f0f0 25%, transparent 25%),
+    linear-gradient(45deg, #f0f0f0 25%, transparent 25%);
+  background-size: 20px 20px;
+  background-color: #fcfcfc;
+}
+
+.contact-form input,
+.contact-form textarea {
+  border-bottom: 2px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-bottom: 2px solid #000;
+  outline: none;
+}
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover:before {
+  left: 100%;
+}
+
+.hero-pattern {
+  background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.photo-frame {
+  position: relative;
+}
+
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid #000;
+  z-index: -1;
+}
+
+.animated-border {
+  position: relative;
+}
+
+.animated-border::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100px;
+  height: 4px;
+  background-color: #000;
+  animation: borderPulse 3s infinite;
+}
+
+@keyframes borderPulse {
+  0%, 100% {
+    width: 100px;
+  }
+
+  50% {
+    width: 150px;
+  }
+}
+
+.role-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.role-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  transform: translateX(-100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }
