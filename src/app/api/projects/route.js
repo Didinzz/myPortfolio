@@ -7,8 +7,6 @@ import { NextResponse } from 'next/server'
 export const revalidate = 300
 
 export async function GET() {
-    console.log('Fetching data from Supabase...'); // Anda akan lihat ini di log server hanya setiap 5 menit
-
     const { data, error } = await supabase
         .from('projects')
         .select()
