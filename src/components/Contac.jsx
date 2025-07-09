@@ -37,17 +37,17 @@ const Contac = () => {
 
             if (response.ok) {
                 toast.success('Message sent successfully!',{
-                    position: 'bottom-top'
+                    position: 'bottom-right'
                 });
                 setFormData({ name: '', email: '', subject: '', message: '' }); // Reset form
             } else {
                 toast.error(`Failed to send message: ${result.error}`, {
-                    position: 'bottom-top'
+                    position: 'bottom-right'
                 });
             }
         } catch (error) {
             toast.error('An unexpected error occurred.', {
-                position: 'bottom-top'
+                position: 'bottom-right'
             });
         } finally {
             setIsLoading(false);
@@ -138,6 +138,10 @@ const Contac = () => {
             </div>
             <Toaster
                 toastOptions={{
+                    style: {
+                        borderRadius: '10px',
+                        color: '#fff',
+                    },
                     success: {
                         style: {
                             background: 'green',
