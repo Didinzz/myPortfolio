@@ -3,6 +3,31 @@
 import React, { useEffect, useState } from 'react'
 import ProjectCard from './ProjectCard'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
+import ProjectCardSkeleton from './ProjectCardSkeleton'
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.2,
+            ease: 'easeOut',
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            ease: 'easeOut',
+            duration: 0.6
+        }
+    }
+};
 
 const MyProject = () => {
     const [projects, setProjects] = useState([])
@@ -13,11 +38,8 @@ const MyProject = () => {
             try {
                 const res = await fetch('/api/projects')
                 const json = await res.json()
-
                 if (json.status === 200) {
                     setProjects(json.data)
-                } else {
-                    console.error('Fecth Error: ', json.message);
                 }
             } catch (error) {
                 console.error('Network Error: ', error.message);
@@ -25,74 +47,69 @@ const MyProject = () => {
                 setLoading(false)
             }
         }
-
         fetchProjects()
     }, [])
 
     return (
-        <section id="projects" className="py-20 bg-gray-50">
+        // 1. Jadikan <section> elemen biasa, HAPUS semua properti motion.
+        <section
+            id="projects"
+            className="py-20 bg-gray-50"
+        >
             <div className="container mx-auto px-4">
-                <div className="text-center mb-16">
+                {/* 2. Beri judul pemicu animasi sendiri */}
+                <motion.div
+                    className="text-center mb-16"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={itemVariants}
+                >
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">My Projects</h2>
                     <p className="text-gray-600 max-w-2xl mx-auto">A selection of my recent work and personal projects that showcase my skills and passion for development.</p>
-                </div>
-                {loading ? (
-                    <p className='text-center'>Loading....</p>
-                ) : projects.length === 0 ? (
-                    <p className='text-center'>No projects found.</p>
-                ) : (
+                </motion.div>
 
+                {/* 3. Logika loading */}
+                {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {projects.slice(0, 3).map((project, index) => (
-                            // <div className="project-card bg-white rounded-lg overflow-hidden" key={index}>
-                            //     <div className="h-48 bg-gray-200 flex items-center justify-center">
-                            //         {/* <i className="fas fa-laptop-code text-5xl text-gray-400"></i> */}
-                            //         {project.image ? (
-                            //             <Image
-                            //                 src={project.image}
-                            //                 alt={project.title}
-                            //                 width={500}
-                            //                 height={500}
-                            //                 className="w-full h-full object-cover"
-                            //             />
-                            //         ) : (
-                            //             <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                            //                 <FaLaptop className='text-gray-400 w-20 h-20' />
-                            //             </div>
-                            //         )}
-                            //     </div>
-                            //     <div className="p-6">
-                            //         <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                            //         <p className="text-gray-600 mb-4">{project.description}</p>
-                            //         <div className="flex flex-wrap gap-2 mb-4">
-                            //             {project.tech.map((item, index) => (
-                            //                 <span key={index} className="px-3 py-1 bg-gray-100 text-sm rounded-full">{item}</span>
-                            //             ))}
-                            //         </div>
-                            //         <div className="flex justify-between">
-                            //             <a href={project.demo ?? "#"} className="text-black hover:underline flex items-center">
-                            //                 <span>View Project</span>
-                            //                 <i className="fas fa-arrow-right ml-2"></i>
-                            //                 <FaArrowRight className='ml-2' />
-                            //             </a>
-                            //             <a href={project.source_code ?? "#"} className="text-black hover:underline">
-                            //                 <FaGithub className='text-xl' />
-                            //             </a>
-                            //         </div>
-                            //     </div>
-                            // </div>
-                            <ProjectCard project={project} key={index} />
+                        {[...Array(3)].map((_, index) => (
+                            <ProjectCardSkeleton key={index} />
                         ))}
                     </div>
-
+                ) : projects.length === 0 ? (
+                    <div className='text-center'>No projects found.</div>
+                ) : (
+                    // 4. Pindahkan pemicu animasi UTAMA ke sini, di grid
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.2 }}
+                        variants={containerVariants}
+                    >
+                        {projects.slice(0, 3).map((project) => (
+                            <ProjectCard
+                                key={project.id}
+                                project={project}
+                                variants={itemVariants}
+                            />
+                        ))}
+                    </motion.div>
                 )}
 
-                <div className="text-center mt-12">
+                {/* 5. Beri tombol 'Load More' pemicu animasi sendiri */}
+                <motion.div
+                    className="text-center mt-12"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.5 }}
+                    variants={itemVariants}
+                >
                     <Link href="/detail_projects"
                         className="inline-block px-8 py-3 border-2 border-black text-black font-medium rounded-full hover:bg-black hover:text-white transition-all">
-                        View All Projects
+                        Load More...
                     </Link>
-                </div>
+                </motion.div>
             </div>
         </section>
     )
