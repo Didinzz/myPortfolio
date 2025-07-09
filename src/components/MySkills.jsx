@@ -55,7 +55,7 @@ const MySkills = () => {
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.8 }}
+            viewport={{ once: true, amount: 0.5 }}
         >
             <div className="container mx-auto px-6">
                 <motion.div className="text-center mb-16" variants={itemVariants}>
