@@ -13,7 +13,7 @@ export default function Home() {
       <AboutMe />
       <MyProject />
       <MySkills />
-      {/* <Contac /> */}
+      <Contac />
       {/* <Github /> */}
       {/* <Lanyard /> */}
     </main>

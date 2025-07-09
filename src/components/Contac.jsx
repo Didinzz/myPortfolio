@@ -1,6 +1,59 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast';
+import { FaDribbble, FaGithub, FaLinkedinIn, FaTwitter } from 'react-icons/fa6'
 
 const Contac = () => {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+    });
+    const [isLoading, setIsLoading] = useState(false);
+
+    const notify = () => toast.success('Message sent successfully!');
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prevData) => ({ ...prevData, [id]: value }));
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Mencegah form reload halaman
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('/api/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                toast.success('Message sent successfully!',{
+                    position: 'bottom-top'
+                });
+                setFormData({ name: '', email: '', subject: '', message: '' }); // Reset form
+            } else {
+                toast.error(`Failed to send message: ${result.error}`, {
+                    position: 'bottom-top'
+                });
+            }
+        } catch (error) {
+            toast.error('An unexpected error occurred.', {
+                position: 'bottom-top'
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <section id="contact" className="py-20 bg-gray-900 text-white">
             <div className="container mx-auto px-6">
@@ -21,7 +74,7 @@ const Contac = () => {
                                 </div>
                                 <div>
                                     <h4 className="text-lg font-medium mb-1">Email</h4>
-                                    <a href="mailto:your.email@example.com" className="text-gray-300 hover:text-white">your.email@example.com</a>
+                                    <a href="mailto:didin_s1sisfo@mahasiswa.ung.ac.id" className="text-gray-300 hover:text-white">didin_s1sisfo@mahasiswa.ung.ac.id</a>
                                 </div>
                             </div>
 
@@ -34,37 +87,20 @@ const Contac = () => {
                                 </div>
                                 <div>
                                     <h4 className="text-lg font-medium mb-1">Location</h4>
-                                    <p className="text-gray-300">City, Country</p>
+                                    <p className="text-gray-300">Gorontalo, Indonesia</p>
                                 </div>
                             </div>
 
-                            <div className="flex items-start">
-                                <div className="bg-gray-800 p-3 rounded-full mr-4">
-                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h4 className="text-lg font-medium mb-1">Working Hours</h4>
-                                    <p className="text-gray-300">Monday - Friday, 9AM - 6PM</p>
-                                </div>
-                            </div>
                         </div>
 
                         <div className="mt-10">
                             <h3 className="text-xl font-bold mb-4">Connect With Me</h3>
                             <div className="flex space-x-4">
-                                <a href="#" className="bg-gray-800 hover:bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                                    <i className="fab fa-github text-white"></i>
+                                <a href="https://github.com/Didinzz" className="bg-gray-800 hover:bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition-all">
+                                    <FaGithub className="text-white" />
                                 </a>
-                                <a href="#" className="bg-gray-800 hover:bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                                    <i className="fab fa-linkedin-in text-white"></i>
-                                </a>
-                                <a href="#" className="bg-gray-800 hover:bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                                    <i className="fab fa-twitter text-white"></i>
-                                </a>
-                                <a href="#" className="bg-gray-800 hover:bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                                    <i className="fab fa-dribbble text-white"></i>
+                                <a href="https://www.linkedin.com/in/didin-septyadi-zakaria-9b9988217/" className="bg-gray-800 hover:bg-gray-700 w-10 h-10 rounded-full flex items-center justify-center transition-all">
+                                    <FaLinkedinIn className="text-white" />
                                 </a>
                             </div>
                         </div>
@@ -72,35 +108,49 @@ const Contac = () => {
 
                     <div>
                         <h3 className="text-2xl font-bold mb-6">Send Me a Message</h3>
-                        <form className="contact-form space-y-6">
+                        <form className="contact-form space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
-                                <input type="text" id="name" className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Your name" />
+                                <input type="text" id="name" name='name' className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Your name" suppressHydrationWarning={true} value={formData.name} onChange={handleChange} required />
                             </div>
 
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
-                                <input type="email" id="email" className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Your email" />
+                                <input type="email" id="email" name='email' className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Your email" suppressHydrationWarning={true} required value={formData.email} onChange={handleChange} />
                             </div>
 
                             <div>
                                 <label htmlFor="subject" className="block text-sm font-medium mb-2">Subject</label>
-                                <input type="text" id="subject" className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Subject" />
+                                <input type="text" id="subject" name='subject' className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Subject" suppressHydrationWarning={true} required value={formData.subject} onChange={handleChange} />
                             </div>
 
                             <div>
                                 <label htmlFor="message" className="block text-sm font-medium mb-2">Message</label>
-                                <textarea id="message" rows="4" className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Your message"></textarea>
+                                <textarea required id="message" name='message' rows="4" className="w-full bg-transparent border-0 border-b-2 border-gray-700 py-2 focus:ring-0 text-white" placeholder="Your message" suppressHydrationWarning={true} value={formData.message} onChange={handleChange}></textarea>
                             </div>
 
                             <div>
-                                <button type="submit" className="w-full bg-white text-gray-900 py-3 px-6 rounded-full font-medium hover:bg-gray-200 transition-all">Send Message</button>
+                                <button suppressHydrationWarning={true} disabled={isLoading} type="submit" className="w-full bg-white text-gray-900 py-3 px-6 rounded-full font-medium hover:bg-gray-200 transition-all cursor-pointer">{isLoading ? 'Sending...' : 'Send Message'}</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-        </section>
+            <Toaster
+                toastOptions={{
+                    success: {
+                        style: {
+                            background: 'green',
+                        },
+                    },
+                    error: {
+                        style: {
+                            background: 'red',
+                        },
+                    },
+                }}
+            />
+        </section >
     )
 }
 

@@ -12,7 +12,7 @@ const HeroInformationLinks = () => {
                 <FaLinkedin className='text-xl' />
             </a>
             <div className="h-6 w-px bg-gray-300"></div>
-            <a href="mailto:your.email@example.com" className="text-sm text-gray-600 hover:text-black transition-all">didin_s1sisfo@mahasiswa.ung.ac.id</a>
+            <a href="mailto:didin_s1sisfo@mahasiswa.ung.ac.id" className="text-sm text-gray-600 hover:text-black transition-all">didin_s1sisfo@mahasiswa.ung.ac.id</a>
         </div>
     )
 }

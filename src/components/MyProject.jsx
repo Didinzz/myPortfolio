@@ -12,7 +12,6 @@ const MyProject = () => {
         const fetchProjects = async () => {
             try {
                 const res = await fetch('/api/projects')
-                console.log(res);
                 const json = await res.json()
 
                 if (json.status === 200) {

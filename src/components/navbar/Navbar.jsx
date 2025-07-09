@@ -8,7 +8,7 @@ import NavbarButton from './NavbarButton'
 
 const Navbar = () => {
     return (
-        <nav className="fixed w-full">
+        <nav className="fixed w-full z-50">
             <div className=" px-8 py-4  flex justify-between items-center">
                 <NavbarHome />
                 {/* <NavbarLinks /> */}
