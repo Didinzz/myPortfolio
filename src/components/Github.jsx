@@ -71,7 +71,7 @@ const GitHubActivity = () => {
                         <h3 className="text-xl font-bold mb-4">Contribution Calendar</h3>
                         {/* ✅ Mengembalikan styling pada div pembungkus kalender */}
                         <div className="flex items-center justify-center github-calendar text-sm p-4 border border-gray-200 rounded-md overflow-x-auto">
-                            {loading ? <div className="animate-pulse h-36 bg-gray-200 rounded-md"></div>
+                            {loading ? <div className="animate-pulse h-36 bg-gray-200 rounded-md"></div> 
                                 :
                                 <GitHubCalendar
                                     username={GITHUB_USERNAME}
