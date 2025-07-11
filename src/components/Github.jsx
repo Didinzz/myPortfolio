@@ -117,8 +117,8 @@ const GitHubActivity = () => {
                                 ) : (
                                     <>
                                         <StatBar label="Public Repositories" value={stats.totalRepos} maxValue={100} />
-                                        <StatBar label="Followers" value={stats.followers} maxValue={200} />
-                                        <StatBar label="Commits This Year" value={stats.commitsThisYear} maxValue={1000} />
+                                        <StatBar label="Followers" value={stats.followers} maxValue={50} />
+                                        <StatBar label="Commits This Year" value={stats.commitsThisYear} maxValue={100} />
                                     </>
                                 )}
                             </div>

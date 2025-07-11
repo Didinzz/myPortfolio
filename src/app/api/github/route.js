@@ -10,23 +10,54 @@ export async function GET() {
     }
 
     const headers = { Authorization: `token ${token}` };
-    const nextConfig = { next: { revalidate: 3600 } }; // Cache for 1 hour
+    const nextConfig = { next: { revalidate: 3600 } };
 
     try {
-        // Jalankan semua fetch secara paralel
-        const [eventsRes, userRes] = await Promise.all([
+        // 1. Siapkan Kueri GraphQL untuk mengambil total kontribusi
+        const year = new Date().getFullYear();
+        const fromDate = `${year}-01-01T00:00:00Z`;
+        const toDate = `${year}-12-31T23:59:59Z`;
+
+        const graphqlQuery = {
+            query: `
+                query($userName: String!, $from: DateTime!, $to: DateTime!) {
+                  user(login: $userName) {
+                    contributionsCollection(from: $from, to: $to) {
+                      contributionCalendar {
+                        totalContributions
+                      }
+                    }
+                  }
+                }
+            `,
+            variables: {
+                userName: username,
+                from: fromDate,
+                to: toDate,
+            },
+        };
+
+        // 2. Tambahkan fetch GraphQL ke Promise.all
+        const [eventsRes, userRes, contributionsRes] = await Promise.all([
             fetch(`https://api.github.com/users/${username}/events/public`, { headers, ...nextConfig }),
-            fetch(`https://api.github.com/users/${username}`, { headers, ...nextConfig })
+            fetch(`https://api.github.com/users/${username}`, { headers, ...nextConfig }),
+            fetch('https://api.github.com/graphql', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(graphqlQuery),
+                ...nextConfig,
+            })
         ]);
 
-        if (!eventsRes.ok || !userRes.ok) {
+        if (!eventsRes.ok || !userRes.ok || !contributionsRes.ok) {
             throw new Error('Failed to fetch data from GitHub');
         }
 
         const events = await eventsRes.json();
         const userData = await userRes.json();
+        const contributionsData = await contributionsRes.json();
 
-        // Logika untuk recent commits (tetap sama)
+        // Logika untuk recent commits
         const recentCommits = events
             .filter((event) => event.type === 'PushEvent' && event.payload.commits)
             .slice(0, 3)
@@ -37,14 +68,14 @@ export async function GET() {
                 date: event.created_at,
             }));
 
-        // Logika untuk Activity Stats
+        // 3. Update objek stats dengan data dinamis
         const stats = {
             totalRepos: userData.public_repos,
             followers: userData.followers,
-            commitsThisYear: 0, // Akan dihitung dari kalender kontribusi
+            // Ambil data dari hasil query GraphQL
+            commitsThisYear: contributionsData.data.user.contributionsCollection.contributionCalendar.totalContributions,
         };
 
-        // Data yang dikirim ke frontend
         const responseData = {
             recentCommits,
             stats,

@@ -7,8 +7,8 @@ import Link from 'next/link';
 const HeroInformationButton = () => {
     const handleDownload = () => {
         const link = document.createElement('a');
-        link.href = '/files/CV_DidinZakaria.pdf';
-        link.download = 'CV_DidinZakaria.pdf';
+        link.href = '/files/CVDidinZakaria.pdf';
+        link.download = 'CVDidinZakaria.pdf';
         link.click();
     }
     return (
