@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import GitHubCalendar from 'react-github-calendar';
-import { FaGithub } from 'react-icons/fa6';
+import { FaGithub, FaStar, FaTrophy } from 'react-icons/fa6';
 import { motion } from 'framer-motion';
 import { timeAgo } from '@/lib/utils';
-import StatBar from '@/components/StatBar'; // Impor StatBar yang sudah benar
+import StatBar from '@/components/StatBar';
+import { Tooltip } from 'react-tooltip'; // Impor Tooltip
+import { formatTooltipDate } from '@/lib/formatTooltipDate';
 
 // Varian animasi
 const containerVariants = {
@@ -60,6 +62,8 @@ const GitHubActivity = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
         >
+            <Tooltip id="react-tooltip" className="custom-tooltip" />
+
             <div className="container mx-auto px-6">
                 <motion.div className="text-center mb-16" variants={itemVariants}>
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">GitHub Activity</h2>
@@ -69,16 +73,26 @@ const GitHubActivity = () => {
                 <motion.div className="bg-white rounded-xl shadow-lg p-6 md:p-8" variants={itemVariants}>
                     <div className="mb-8">
                         <h3 className="text-xl font-bold mb-4">Contribution Calendar</h3>
-                        {/* ✅ Mengembalikan styling pada div pembungkus kalender */}
-                        <div className="flex items-center justify-center github-calendar text-sm p-4 border border-gray-200 rounded-md overflow-x-auto">
-                            {loading ? <div className="animate-pulse h-36 bg-gray-200 rounded-md"></div> 
-                                :
+                        <div className="github-calendar text-sm p-4 border border-gray-200 rounded-md overflow-x-auto flex justify-center">
+                            {loading ? <div className="animate-pulse h-40 w-full bg-gray-200 rounded-md"></div> :
                                 <GitHubCalendar
                                     username={GITHUB_USERNAME}
                                     blockSize={16}
                                     fontSize={12}
                                     blockMargin={7}
-                                    colorScheme='light' />}
+                                    colorScheme='light'
+                                    renderBlock={(block, activity) => {
+                                        const content = activity.count > 0
+                                            ? `${activity.count} contributions on ${formatTooltipDate(activity.date)}`
+                                            : `No contributions on ${formatTooltipDate(activity.date)}`;
+
+                                        return React.cloneElement(block, {
+                                            'data-tooltip-id': 'react-tooltip',
+                                            'data-tooltip-content': content,
+                                        });
+                                    }}
+                                />
+                            }
                         </div>
                     </div>
 
@@ -113,12 +127,30 @@ const GitHubActivity = () => {
                                     <div className="space-y-6 animate-pulse">
                                         <div className="h-8 bg-gray-200 rounded-md"></div>
                                         <div className="h-8 bg-gray-200 rounded-md"></div>
+                                        <div className="h-8 bg-gray-200 rounded-md"></div>
                                     </div>
                                 ) : (
                                     <>
                                         <StatBar label="Public Repositories" value={stats.totalRepos} maxValue={100} />
-                                        <StatBar label="Followers" value={stats.followers} maxValue={50} />
-                                        <StatBar label="Commits This Year" value={stats.commitsThisYear} maxValue={100} />
+                                        <StatBar label="Commits (This Year)" value={stats.commitsThisYear} maxValue={100} />
+                                        <StatBar label="Followers" value={stats.followers} maxValue={100} />
+
+                                        {stats.mostStarred && (
+                                            <div className="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+                                                <div className="flex items-center">
+                                                    <FaTrophy className="text-yellow-500 mr-3 text-xl" />
+                                                    <div>
+                                                        <p className="text-sm font-bold text-yellow-800">Most Popular Project</p>
+                                                        <a href={stats.mostStarred.url} target="_blank" rel="noopener noreferrer" className="text-md font-semibold text-gray-800 hover:underline">
+                                                            {stats.mostStarred.name}
+                                                        </a>
+                                                        <p className="text-xs text-gray-600 flex items-center">
+                                                            <FaStar className="mr-1" /> {stats.mostStarred.stars} stars
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </>
                                 )}
                             </div>

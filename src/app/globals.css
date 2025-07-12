@@ -216,3 +216,9 @@ body {
 .transform-style-preserve-3d {
   transform-style: preserve-3d;
 }
+
+.custom-tooltip {
+  font-size: 14px !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+}
